@@ -1,6 +1,6 @@
 # _*_ Makefile _*_
 
-shell: shell.c ls cat
+shell: shell.c ls cat mkdir
 	gcc -g shell.c -o shell
 
 ls: ls.c
@@ -9,5 +9,8 @@ ls: ls.c
 cat: cat.c
 	gcc cat.c -o cat
 
+mkdir: mkdir.c
+	gcc mkdir.c -o mkdir
+
 clean:
-	rm -f shell ls cat
+	rm -f shell ls cat mkdir
