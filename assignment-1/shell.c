@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/wait.h>
+#include <pthread.h>
 
 char* takeInput() {
     char* command = malloc(1000 * sizeof(char));
@@ -33,18 +34,26 @@ char** tokeniseString(char* string, int *args) {
             (*args)++;
         }
     }
-    tokenisedString[index + 1] = (char *)NULL;
+    index++;
+    (*args)++;
+    tokenisedString[index] = (char *)NULL;
     return tokenisedString;
 }
 
 int isExternalCommand(char *command) {
     int result = 0;
-    if (strcmp(command, "ls") == 0) result = 1;
-    if (strcmp(command, "cat") == 0) result = 1;
-    if (strcmp(command, "date") == 0) result = 1;
-    if (strcmp(command, "rm") == 0) result = 1;
-    if (strcmp(command, "mkdir") == 0) result = 1;
+    if (strcmp(command, "myls") == 0) result = 1;
+    if (strcmp(command, "mycat") == 0) result = 1;
+    if (strcmp(command, "mydate") == 0) result = 1;
+    if (strcmp(command, "myrm") == 0) result = 1;
+    if (strcmp(command, "mymkdir") == 0) result = 1;
     return result;
+}
+
+void *worker(void *arg) {
+    char *command = arg;
+    system(command);
+    return NULL;
 }
 
 int main() {
@@ -74,23 +83,36 @@ int main() {
                     printf("%s ", tokenisedCommand[i]);
                 }
                 printf("\n");
+            } else if (isExternalCommand(tokenisedCommand[0])) {
+                if (strcmp(tokenisedCommand[args - 1], "&t") == 0) {
+                    char *externalCommand = malloc(1000 * sizeof(char));
+                    externalCommand[0] = '\0';
+                    for (int i = 0; i < args - 1; ++i) {
+                        strcat(externalCommand, tokenisedCommand[i]);
+                        strcat(externalCommand, " ");
+                    }
+                    pthread_t newThread;
+                    pthread_create(&newThread, NULL, &worker, externalCommand);
+                    pthread_join(newThread, NULL);
+                } else {
+                    int rc = fork();
+                    getcwd(path, 1000);
+                    strcat(path, "/");
+                    if (rc == 0) {
+                        char err[100];
+                        if (execv(strcat(path, tokenisedCommand[0]), &tokenisedCommand[0]) == -1) {
+                            perror(err);
+                            printf("%s", err);
+                        }
+                        return 0;
+                    } else {
+                        int wstatus;
+                        waitpid(rc, &wstatus, 0);
+                    }
+                }
             } else if (strcmp("exit", tokenisedCommand[0]) == 0) {
                 printf("Thanks for visiting, cya.\n");
                 break;
-            } else if (isExternalCommand(tokenisedCommand[0])) {
-                int rc = fork();
-                getcwd(path, 1000);
-                strcat(path, "/");
-                if (rc == 0) {
-                    char err[100];
-                    if (execv(strcat(path, tokenisedCommand[0]), &tokenisedCommand[0]) == -1) {
-                        perror(err);
-                        printf("%s", err);
-                    }
-                } else {
-                    int wstatus;
-                    waitpid(rc, &wstatus, 0);
-                }
             } else {
                 printf("bash: %s: command not found\n", tokenisedCommand[0]);
             }

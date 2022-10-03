@@ -1,19 +1,19 @@
 # _*_ Makefile _*_
 
-shell: shell.c ls cat mkdir rm
+shell: shell.c myls mycat mymkdir myrm
 	gcc -g shell.c -o shell
 
-ls: ls.c
-	gcc ls.c -o ls
+myls: ls.c
+	gcc ls.c -o myls
 
-cat: cat.c
-	gcc cat.c -o cat
+mycat: cat.c
+	gcc cat.c -o mycat
 
-mkdir: mkdir.c
-	gcc mkdir.c -o mkdir
+mymkdir: mkdir.c
+	gcc mkdir.c -o mymkdir
 
-rm: rm.c
-	gcc rm.c -o rm
+myrm: rm.c
+	gcc rm.c -o myrm
 
 clean:
-	rm -f shell ls cat mkdir rm
+	rm -f shell myls mycat mymkdir myrm
