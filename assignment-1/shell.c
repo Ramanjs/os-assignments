@@ -56,6 +56,12 @@ void *worker(void *arg) {
     return NULL;
 }
 
+void printError() {
+    char err[100];
+    perror(err);
+    printf("%s", err);
+}
+
 int main() {
     printf("Welcome to my shell!\n");
     char *path = malloc(1000 * sizeof(char));
@@ -71,13 +77,7 @@ int main() {
                 printf("%s\n", path);
             } else if (strcmp("cd", tokenisedCommand[0]) == 0) {
                 int status = chdir(tokenisedCommand[1]);
-                if (status == -1) {
-                    if (errno == 1) {
-                        printf("Permission denied\n");
-                    } else if (errno == 2) {
-                        printf("No such file or directory\n");
-                    }
-                }
+                if (status == -1) printError();
             } else if (strcmp("echo", tokenisedCommand[0]) == 0) {
                 for (int i = 1; i <= args; i++) {
                     printf("%s ", tokenisedCommand[i]);
@@ -99,11 +99,7 @@ int main() {
                     getcwd(path, 1000);
                     strcat(path, "/");
                     if (rc == 0) {
-                        char err[100];
-                        if (execv(strcat(path, tokenisedCommand[0]), &tokenisedCommand[0]) == -1) {
-                            perror(err);
-                            printf("%s", err);
-                        }
+                        if (execv(strcat(path, tokenisedCommand[0]), &tokenisedCommand[0]) == -1) printError();
                         return 0;
                     } else {
                         int wstatus;
