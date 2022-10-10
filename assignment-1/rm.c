@@ -14,30 +14,37 @@ int isDir(char *path) {
 }
 
 void removeFile(char *path, int setOption2) {
-    char filePath[1000];
-    getcwd(filePath, 1000);
-    strcat(filePath, "/");
-    strcat(filePath, path);
-    if (unlink(filePath) == -1) {
+    if (unlink(path) == -1) {
         if (!(setOption2 && errno == ENOENT)) printf("%s", strerror(errno));
     }
 }
 
-void removeIt(char *file, int setOption2) {
-    if (isDir(file)) {
-        DIR *dir = opendir(file);
+void removeIt(char *filePath, int setOption2) {
+    if (isDir(filePath)) {
+        DIR *dir = opendir(filePath);
         struct dirent *currentEntry = readdir(dir);
         while (currentEntry != NULL) {
-            removeIt(currentEntry->d_name, setOption2);
+            if (strcmp(currentEntry->d_name, ".") == 0 || strcmp(currentEntry->d_name, "..") == 0) {
+                currentEntry = readdir(dir);
+                continue;
+            }
+            char path[1000];
+            strcpy(path, filePath);
+            strcat(path, "/");
+            strcat(path, currentEntry->d_name);
+            removeIt(path, setOption2);
             currentEntry = readdir(dir);
         }
+        rmdir(filePath);
+        closedir(dir);
     } else {
-        removeFile(file, setOption2);
+        removeFile(filePath, setOption2);
     }
 }
 
 int main(int argc, char *argv[]) {
-    //
+    char path[1000];
+
     // Defile options
     char option1 = 'r';
     char option2 = 'f';
@@ -66,8 +73,12 @@ int main(int argc, char *argv[]) {
     }
 
     for (int i = 0; i < numFiles; ++i) {
-        if (setOption1) removeIt(files[i], setOption2);
-        else removeFile(files[i], setOption2);
+        getcwd(path, 1000);
+        strcat(path, "/");
+        strcat(path, files[i]);
+
+        if (setOption1) removeIt(path, setOption2);
+        else removeFile(path, setOption2);
     }
     return 0;
 }
