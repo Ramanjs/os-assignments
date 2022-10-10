@@ -1,17 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
+#include <errno.h>
+#include <dirent.h>
 
-void removeFile(char *path) {
-    char pwd[1000];
-    getcwd(pwd, 1000);
-    strcat(pwd, "/");
-    strcat(pwd, path);
-    if (unlink(pwd) == -1) {
-        char err[100];
-        perror(err);
-        printf("%s", err);
+int isDir(char *path) {
+    struct stat attrib;
+    stat(path, &attrib);
+    return S_ISDIR(attrib.st_mode);
+}
+
+void removeFile(char *path, int setOption2) {
+    char filePath[1000];
+    getcwd(filePath, 1000);
+    strcat(filePath, "/");
+    strcat(filePath, path);
+    if (unlink(filePath) == -1) {
+        if (!(setOption2 && errno == ENOENT)) printf("%s", strerror(errno));
+    }
+}
+
+void removeIt(char *file, int setOption2) {
+    if (isDir(file)) {
+        DIR *dir = opendir(file);
+        struct dirent *currentEntry = readdir(dir);
+        while (currentEntry != NULL) {
+            removeIt(currentEntry->d_name, setOption2);
+            currentEntry = readdir(dir);
+        }
+    } else {
+        removeFile(file, setOption2);
     }
 }
 
@@ -44,8 +65,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    for (int i = 1; i < argc; ++i) {
-        removeFile(argv[i]);
+    for (int i = 0; i < numFiles; ++i) {
+        if (setOption1) removeIt(files[i], setOption2);
+        else removeFile(files[i], setOption2);
     }
     return 0;
 }
