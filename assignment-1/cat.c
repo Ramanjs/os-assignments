@@ -19,7 +19,7 @@ void printContents(char *path, int setOption1, int setOption2) {
     }
     char ch;
     ch = fgetc(ptr);
-    printf("%5d  ", lineNumber++);
+    if (setOption2) printf("%5d  ", lineNumber++);
     while (ch != EOF) {
         if (setOption1 && ch == '\n') printf("$");
         printf("%c", ch);
