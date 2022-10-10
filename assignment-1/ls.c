@@ -64,6 +64,9 @@ int main(int argc, char *argv[]) {
         numFiles = 1;
     }
 
+    numFiles = 1;
+    files[0] = "shell.c";
+
     for (int i = 0; i < numFiles; i++) {
         DIR *dir = opendir(files[i]);
         struct dirent *currentEntry = readdir(dir);
@@ -74,8 +77,7 @@ int main(int argc, char *argv[]) {
             while (currentEntry != NULL) {
                 struct stat attrib;
                 char filePath[100];
-                filePath[0] = '\0';
-                strcat(filePath, files[i]);
+                strcpy(filePath, files[i]);
                 strcat(filePath, "/");
                 strcat(filePath, currentEntry->d_name);
                 if (stat(filePath, &attrib) != 0) {
@@ -99,6 +101,8 @@ int main(int argc, char *argv[]) {
                     char modifiedTime[100];
                     strftime(modifiedTime, sizeof(modifiedTime), "%b %e %H:%M", localtime(&(attrib.st_ctim)));
                     printf("%s %d %s %s %10d %s %s\n", permissions, nlinks, usr->pw_name, grp->gr_name, size, modifiedTime, currentEntry->d_name);
+
+                    free(permissions);
                 }
 
                 currentEntry = readdir(dir);

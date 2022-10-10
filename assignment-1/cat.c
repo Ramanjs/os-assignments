@@ -14,9 +14,7 @@ void printContents(char *path, int setOption1, int setOption2) {
 
     FILE *ptr = fopen(pwd, "r");
     if (ptr == NULL) {
-        char err[100];
-        perror(err);
-        printf("%s", err);
+        printf("%s", strerror(errno));
         return;
     }
     char ch;
