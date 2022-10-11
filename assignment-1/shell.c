@@ -6,6 +6,8 @@
 #include <sys/wait.h>
 #include <pthread.h>
 
+#include "utils.h"
+
 char* takeInput() {
     char* command = malloc(1000 * sizeof(char));
     int index = 0;
@@ -20,9 +22,9 @@ char* takeInput() {
 }
 
 char** tokeniseString(char* string, int *args) {
-    char** tokenisedString = malloc(5 * sizeof(char*));
-    for (int i = 0; i < 5; ++i) {
-        tokenisedString[i] = malloc(100 * sizeof(char*));
+    char** tokenisedString = (char**)malloc(100 * sizeof(char*));
+    for (int i = 0; i < 100; ++i) {
+        tokenisedString[i] = (char*)malloc(100 * sizeof(char));
         tokenisedString[i][0] = '\0';
     }
     int index = 0;
@@ -62,6 +64,23 @@ void printError() {
     printf("%s", err);
 }
 
+void echo(char **tokenisedCommand, int args) {
+    char option1 = 'n';
+    char option2 = 'e';
+    int setOption1 = 0;
+    int setOption2 = 0;
+
+    char **strings = getFilesArray();
+    int numStrings = 0;
+
+    extractArguments(strings, tokenisedCommand, args, option1, option2, &setOption1, &setOption2, &numStrings);
+
+    for (int i = 0; i < numStrings; ++i) {
+        printf("%s ", strings[i]);
+    }
+    if (!setOption1) printf("\n");
+}
+
 int main() {
     printf("Welcome to my shell!\n");
     char *path = malloc(1000 * sizeof(char));
@@ -79,10 +98,7 @@ int main() {
                 int status = chdir(tokenisedCommand[1]);
                 if (status == -1) printError();
             } else if (strcmp("echo", tokenisedCommand[0]) == 0) {
-                for (int i = 1; i <= args; i++) {
-                    printf("%s ", tokenisedCommand[i]);
-                }
-                printf("\n");
+                echo(tokenisedCommand, args);
             } else if (isExternalCommand(tokenisedCommand[0])) {
                 if (strcmp(tokenisedCommand[args - 1], "&t") == 0) {
                     char *externalCommand = malloc(1000 * sizeof(char));
@@ -112,10 +128,6 @@ int main() {
             } else {
                 printf("bash: %s: command not found\n", tokenisedCommand[0]);
             }
-            for (int i = 0; i < args; ++i) {
-                free(tokenisedCommand[i]);
-            }
-            free(tokenisedCommand);
         }
         free(command);
     }
