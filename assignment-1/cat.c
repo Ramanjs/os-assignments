@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "utils.h"
+
 void printContents(char *path, int setOption1, int setOption2) {
     int lineNumber = 1;
 
@@ -42,26 +44,12 @@ int main(int argc, char *argv[]) {
     int setOption2 = 0;
 
     // Define files array
-    char **files = malloc(10 * sizeof(char*));
-    for (int i = 0; i < 10; ++i) {
-        files[i] = malloc(100 * sizeof(char));
-        files[i][0] = '\0';
-    }
+    char **files = getFilesArray();
     int numFiles = 0;
 
 
     // Extract arguments and options
-    for (int i = 1; i < argc; i++) {
-        if (argv[i][0] == '-') {
-            for (int j = 0; j < strlen(argv[i]); j++) {
-                if (argv[i][j] == option1) setOption1 = 1;
-                if (argv[i][j] == option2) setOption2 = 1;
-            }
-        } else {
-            strcat(files[numFiles], argv[i]);
-            numFiles++;
-        }
-    }
+    extractArguments(files, argv, argc, option1, option2, &setOption1, &setOption2, &numFiles);
 
     for (int i = 0; i < numFiles; ++i) {
         printContents(files[i], setOption1, setOption2);

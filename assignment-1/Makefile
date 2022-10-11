@@ -9,17 +9,24 @@ myls: ls.o utils.o
 ls.o: ls.c
 	gcc -c ls.c -o ls.o
 
-mycat: cat.c
-	gcc cat.c -o mycat
+mycat: cat.o
+	gcc cat.o utils.o -o mycat
+
+cat.o: cat.c
+	gcc -c cat.c -o cat.o
 
 mymkdir: mkdir.c
 	gcc mkdir.c -o mymkdir
 
-myrm: rm.c
-	gcc rm.c -o myrm
+myrm: rm.o
+	gcc rm.c utils.o -o myrm
+
+rm.o: rm.c
+	gcc -c rm.c -o rm.o
 
 utils.o: utils.c
 	gcc -c utils.c -o utils.o
 
 clean:
-	rm -f shell myls mycat mymkdir myrm ls.o utils.o
+	rm -f shell myls mycat mymkdir myrm 
+	rm -f ls.o cat.o rm.o utils.o
