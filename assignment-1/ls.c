@@ -10,6 +10,8 @@
 #include <pwd.h>
 #include <grp.h>
 
+#include "utils.h"
+
 char* getPermissionsString(struct stat *attrib){
     char *permissions = malloc(10 * sizeof(char));
     mode_t perm = attrib->st_mode;
@@ -34,11 +36,7 @@ int main(int argc, char *argv[]) {
     int setOption2 = 0;
 
     // Define files array
-    char **files = malloc(10 * sizeof(char*));
-    for (int i = 0; i < 10; ++i) {
-        files[i] = malloc(100 * sizeof(char));
-        files[i][0] = '\0';
-    }
+    char **files = getFilesArray();
     int numFiles = 0;
 
     // Extract arguments and options
@@ -46,17 +44,7 @@ int main(int argc, char *argv[]) {
         files[0] = getcwd(files[0], 1000);
         numFiles = 1;
     } else {
-        for (int i = 1; i < argc; i++) {
-            if (argv[i][0] == '-') {
-                for (int j = 0; j < strlen(argv[i]); j++) {
-                    if (argv[i][j] == option1) setOption1 = 1;
-                    if (argv[i][j] == option2) setOption2 = 1;
-                }
-            } else {
-                strcat(files[numFiles], argv[i]);
-                numFiles++;
-            }
-        }
+        extractArguments(files, argv, argc, option1, option2, &setOption1, &setOption2, &numFiles);
     }
 
     if (numFiles == 0) {
@@ -64,10 +52,35 @@ int main(int argc, char *argv[]) {
         numFiles = 1;
     }
 
-    numFiles = 1;
-    files[0] = "shell.c";
-
     for (int i = 0; i < numFiles; i++) {
+
+        if (!isDir(files[i])) {
+            if (setOption1) {
+                struct stat attrib;
+                if (stat(files[i], &attrib) != 0) {
+                    printf("%s\n", strerror(errno));
+                } else {
+                    char *permissions = getPermissionsString(&attrib);
+                    int nlinks = attrib.st_nlink;
+
+                    int uid = attrib.st_uid;
+                    struct passwd *usr = getpwuid(uid);
+
+                    int gid = attrib.st_gid;
+                    struct group *grp = getgrgid(gid);
+
+                    int size = attrib.st_size;
+                    char modifiedTime[100];
+                    strftime(modifiedTime, sizeof(modifiedTime), "%b %e %H:%M", localtime(&(attrib.st_ctim)));
+                    printf("%s %d %s %s %10d %s %s\n", permissions, nlinks, usr->pw_name, grp->gr_name, size, modifiedTime, files[i]);
+                    free(permissions);
+                }
+            } else {
+                printf("%s\n", files[i]);
+            }
+            continue;
+        }
+
         DIR *dir = opendir(files[i]);
         struct dirent *currentEntry = readdir(dir);
 
