@@ -21,26 +21,7 @@ char* takeInput() {
     return command;
 }
 
-char** tokeniseString(char* string, int *args) {
-    char** tokenisedString = (char**)malloc(100 * sizeof(char*));
-    for (int i = 0; i < 100; ++i) {
-        tokenisedString[i] = (char*)malloc(100 * sizeof(char));
-        tokenisedString[i][0] = '\0';
-    }
-    int index = 0;
-    for (int i = 0; i < strlen(string); ++i) {
-        if (string[i] != ' ') {
-            strncat(tokenisedString[index], &string[i], 1);
-        } else {
-            index++;
-            (*args)++;
-        }
-    }
-    index++;
-    (*args)++;
-    tokenisedString[index] = (char *)NULL;
-    return tokenisedString;
-}
+
 
 int isExternalCommand(char *command) {
     int result = 0;
@@ -90,7 +71,7 @@ int main() {
         command = takeInput();
         if (strlen(command) > 0) {
             int args = 0;
-            char **tokenisedCommand = tokeniseString(command, &args);
+            char **tokenisedCommand = tokeniseString(command, &args, ' ');
             if (strcmp("pwd", tokenisedCommand[0]) == 0) {
                 getcwd(path, 1000);
                 printf("%s\n", path);

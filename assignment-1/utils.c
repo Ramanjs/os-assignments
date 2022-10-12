@@ -2,6 +2,27 @@
 #include <string.h>
 #include <sys/stat.h>
 
+char** tokeniseString(char* string, int *args, char token) {
+    char** tokenisedString = (char**)malloc(100 * sizeof(char*));
+    for (int i = 0; i < 100; ++i) {
+        tokenisedString[i] = (char*)malloc(100 * sizeof(char));
+        tokenisedString[i][0] = '\0';
+    }
+    int index = 0;
+    for (int i = 0; i < strlen(string); ++i) {
+        if (string[i] != token) {
+            strncat(tokenisedString[index], &string[i], 1);
+        } else {
+            index++;
+            (*args)++;
+        }
+    }
+    index++;
+    (*args)++;
+    tokenisedString[index] = (char *)NULL;
+    return tokenisedString;
+}
+
 char **getFilesArray() {
     char **files = malloc(10 * sizeof(char*));
     for (int i = 0; i < 10; ++i) {
@@ -28,6 +49,5 @@ void extractArguments(char **files, char *argv[], int argc, char option1, char o
 
 int isDir(char *path) {
     struct stat attrib;
-    stat(path, &attrib);
-    return S_ISDIR(attrib.st_mode);
+    return stat(path, &attrib) && S_ISDIR(attrib.st_mode);
 }
