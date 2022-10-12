@@ -11,7 +11,7 @@
 
 void removeFile(char *path, int setOption2) {
     if (unlink(path) == -1) {
-        if (!(setOption2 && errno == ENOENT)) printf("%s", strerror(errno));
+        if (!(setOption2 && errno == ENOENT)) printf("%s\n", strerror(errno));
     }
 }
 

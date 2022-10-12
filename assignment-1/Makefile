@@ -7,7 +7,7 @@ myls: ls.o utils.o
 	gcc ls.o utils.o -o myls
 
 ls.o: ls.c
-	gcc -c ls.c -o ls.o
+	gcc -c -w ls.c -o ls.o
 
 mycat: cat.o utils.o
 	gcc cat.o utils.o -o mycat

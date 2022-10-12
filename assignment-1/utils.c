@@ -49,5 +49,5 @@ void extractArguments(char **files, char *argv[], int argc, char option1, char o
 
 int isDir(char *path) {
     struct stat attrib;
-    return stat(path, &attrib) && S_ISDIR(attrib.st_mode);
+    return stat(path, &attrib) == 0 && S_ISDIR(attrib.st_mode);
 }
