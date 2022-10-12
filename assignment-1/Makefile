@@ -1,6 +1,6 @@
 # _*_ Makefile _*_
 
-shell: shell.c myls mycat mymkdir myrm utils.o
+shell: shell.c myls mycat mymkdir myrm mydate utils.o
 	gcc -g shell.c utils.o -o shell
 
 myls: ls.o utils.o
@@ -21,15 +21,21 @@ mymkdir: mkdir.o utils.o
 mkdir.o: mkdir.c
 	gcc -c mkdir.c -o mkdir.o
 
-myrm: rm.o
-	gcc rm.c utils.o -o myrm
+myrm: rm.o utils.o
+	gcc rm.o utils.o -o myrm
 
 rm.o: rm.c
 	gcc -c rm.c -o rm.o
+	
+mydate: date.o utils.o
+	gcc date.o utils.o -o mydate
+
+date.o: date.c
+	gcc -c date.c -o date.o
 
 utils.o: utils.c
 	gcc -c utils.c -o utils.o
 
 clean:
-	rm -f shell myls mycat mymkdir myrm 
-	rm -f ls.o cat.o rm.o mkdir.o utils.o
+	rm -f shell myls mycat mymkdir myrm mydate 
+	rm -f ls.o cat.o rm.o mkdir.o date.o utils.o
