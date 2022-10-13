@@ -13,7 +13,7 @@
 #include "utils.h"
 
 char* getPermissionsString(struct stat *attrib){
-    char *permissions = malloc(10 * sizeof(char));
+    char permissions[10];
     mode_t perm = attrib->st_mode;
     permissions[0] = (perm & S_IRUSR) ? 'r' : '-';
     permissions[1] = (perm & S_IWUSR) ? 'w' : '-';
@@ -40,15 +40,10 @@ int main(int argc, char *argv[]) {
     int numFiles = 0;
 
     // Extract arguments and options
-    if (argc == 1) {
-        files[0] = getcwd(files[0], 1000);
-        numFiles = 1;
-    } else {
-        extractArguments(files, argv, argc, option1, option2, &setOption1, &setOption2, &numFiles);
-    }
+    extractArguments(files, argv, argc, option1, option2, &setOption1, &setOption2, &numFiles);
 
     if (numFiles == 0) {
-        files[0] = getcwd(files[0], 1000);
+        files[0] = getenv("PWD");
         numFiles = 1;
     }
 

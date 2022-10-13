@@ -39,7 +39,7 @@ void removeIt(char *filePath, int setOption2) {
 }
 
 int main(int argc, char *argv[]) {
-    char path[1000];
+    char* path;
 
     // Defile options
     char option1 = 'r';
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
 
 
     for (int i = 0; i < numFiles; ++i) {
-        getcwd(path, 1000);
+        path = getenv("PWD");
         strcat(path, "/");
         strcat(path, files[i]);
 

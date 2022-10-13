@@ -9,8 +9,8 @@
 void printContents(char *path, int setOption1, int setOption2) {
     int lineNumber = 1;
 
-    char pwd[1000];
-    getcwd(pwd, 1000);
+    char* pwd;
+    pwd = getenv("PWD");
     strcat(pwd, "/");
     strcat(pwd, path);
 

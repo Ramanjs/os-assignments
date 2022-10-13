@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
@@ -7,8 +8,8 @@
 #include "utils.h"
 
 void createDirectory(char *path, int setOption1, int setOption2) {
-    char pwd[1000];
-    getcwd(pwd, 1000);
+    char* pwd;
+    pwd = getenv("PWD");
 
     if (setOption1) {
         int depth = 0;

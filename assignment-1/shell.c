@@ -183,7 +183,7 @@ int main() {
                 echo(tokenisedCommand, args);
             } else if (isExternalCommand(tokenisedCommand[0])) {
                 if (strcmp(tokenisedCommand[args - 1], "&t") == 0) {
-                    char *externalCommand = malloc(1000 * sizeof(char));
+                    char externalCommand[1000];
                     externalCommand[0] = '\0';
                     for (int i = 0; i < args - 1; ++i) {
                         strcat(externalCommand, tokenisedCommand[i]);
