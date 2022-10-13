@@ -1,7 +1,7 @@
 # _*_ Makefile _*_
 
 shell: shell.c myls mycat mymkdir myrm mydate utils.o
-	gcc -g shell.c utils.o -o shell
+	gcc -g shell.c utils.o -l readline -o shell
 
 myls: ls.o utils.o
 	gcc ls.o utils.o -o myls

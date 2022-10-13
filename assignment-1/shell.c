@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -8,19 +10,6 @@
 #include <limits.h>
 
 #include "utils.h"
-
-char* takeInput() {
-    char* command = malloc(1000 * sizeof(char));
-    int index = 0;
-    char ch = fgetc(stdin);
-    while (ch != '\n') {
-        command[index] = ch;
-        index++;
-        ch = fgetc(stdin);
-    }
-    command[index] = '\0';
-    return command;
-}
 
 int isExternalCommand(char *command) {
     int result = 0;
@@ -174,11 +163,15 @@ void pwd(char **tokenisedCommand, int args) {
 
 int main() {
     printf("Welcome to my shell!\n");
-    char *path = malloc(1000 * sizeof(char));
+
+    char path[1000];
+    getcwd(path, 1000);
+    strcat(path, "/");
+
     char* command;
+
     while (1) {
-        printf("$ ");
-        command = takeInput();
+        command = readline(">> ");
         if (strlen(command) > 0) {
             int args = 0;
             char **tokenisedCommand = tokeniseString(command, &args, ' ');
@@ -201,10 +194,11 @@ int main() {
                     pthread_join(newThread, NULL);
                 } else {
                     int rc = fork();
-                    getcwd(path, 1000);
-                    strcat(path, "/");
                     if (rc == 0) {
-                        if (execv(strcat(path, tokenisedCommand[0]), &tokenisedCommand[0]) == -1) printError();
+                        char buffer[1000];
+                        strcpy(buffer, path);
+                        strcat(buffer, tokenisedCommand[0]);
+                        if (execv(buffer, &tokenisedCommand[0]) == -1) printError();
                         return 0;
                     } else {
                         int wstatus;
@@ -215,7 +209,7 @@ int main() {
                 printf("Thanks for visiting, cya.\n");
                 break;
             } else {
-                printf("bash: %s: command not found\n", tokenisedCommand[0]);
+                printf("%s: command not found\n", tokenisedCommand[0]);
             }
         }
         free(command);
