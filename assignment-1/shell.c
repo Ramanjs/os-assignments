@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <sys/wait.h>
 #include <pthread.h>
+#include <limits.h>
 
 #include "utils.h"
 
@@ -20,8 +21,6 @@ char* takeInput() {
     command[index] = '\0';
     return command;
 }
-
-
 
 int isExternalCommand(char *command) {
     int result = 0;
@@ -62,6 +61,85 @@ void echo(char **tokenisedCommand, int args) {
     if (!setOption1) printf("\n");
 }
 
+void cd(char **tokenisedCommand, int args) {
+    char option1 = 'L';
+    char option2 = 'P';
+    int setOption1 = 1;
+    int setOption2 = 0;
+
+    // Define files array
+    char **files = getFilesArray();
+    int numFiles = 0;
+
+    extractArguments(files, tokenisedCommand, args, option1, option2, &setOption1, &setOption2, &numFiles);
+
+    if (numFiles > 1) {
+        printf("Too many arguments\n");
+        return;
+    }
+
+    char* cwd;
+    cwd = getenv("PWD");
+
+    if (strcmp(files[0], "../") == 0 || strcmp(files[0], "..") == 0) {
+        if (strlen(cwd) == 0) {
+            return;
+        }
+
+        int lastSlashIndex = strlen(cwd) - 1;
+        while (cwd[lastSlashIndex] != '/') {
+            lastSlashIndex--;
+        }
+        char substr[100];
+        memcpy(substr, &cwd[0], lastSlashIndex);
+        substr[lastSlashIndex] = '\0';
+        setenv("PWD", substr, 1);
+        return;
+    }
+
+    char newPath[1000];
+    strcpy(newPath, cwd);
+    strcat(newPath, "/");
+    strcat(newPath, files[0]);
+
+    if (setOption2 || !isLink(newPath)) {
+        char *temp;
+        temp = realpath(newPath, NULL);
+        if (temp == NULL) {
+            printf("No such file or directory\n");
+            return;
+        }
+        strcpy(newPath, temp);
+    }
+    setenv("PWD", newPath, 1);
+}
+
+void pwd(char **tokenisedCommand, int args) {
+    char option1 = 'L';
+    char option2 = 'P';
+    int setOption1 = 1;
+    int setOption2 = 0;
+
+    // Define files array
+    char **files = getFilesArray();
+    int numFiles = 0;
+
+    extractArguments(files, tokenisedCommand, args, option1, option2, &setOption1, &setOption2, &numFiles);
+
+    if (numFiles > 0) {
+        printf("Too many arguments\n");
+        return;
+    }
+
+    char* cwd;
+    cwd = getenv("PWD");
+
+    if (setOption2) {
+        cwd = realpath(cwd, NULL);
+    }
+    printf("%s\n", cwd);
+}
+
 int main() {
     printf("Welcome to my shell!\n");
     char *path = malloc(1000 * sizeof(char));
@@ -73,11 +151,9 @@ int main() {
             int args = 0;
             char **tokenisedCommand = tokeniseString(command, &args, ' ');
             if (strcmp("pwd", tokenisedCommand[0]) == 0) {
-                getcwd(path, 1000);
-                printf("%s\n", path);
+                pwd(tokenisedCommand, args);
             } else if (strcmp("cd", tokenisedCommand[0]) == 0) {
-                int status = chdir(tokenisedCommand[1]);
-                if (status == -1) printError();
+                cd(tokenisedCommand, args);
             } else if (strcmp("echo", tokenisedCommand[0]) == 0) {
                 echo(tokenisedCommand, args);
             } else if (isExternalCommand(tokenisedCommand[0])) {

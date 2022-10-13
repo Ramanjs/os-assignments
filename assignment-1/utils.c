@@ -51,3 +51,8 @@ int isDir(char *path) {
     struct stat attrib;
     return stat(path, &attrib) == 0 && S_ISDIR(attrib.st_mode);
 }
+
+int isLink(char *path) {
+    struct stat attrib;
+    return lstat(path, &attrib) == 0 && S_ISLNK(attrib.st_mode);
+}
