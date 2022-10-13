@@ -44,6 +44,19 @@ void printError() {
     printf("%s", err);
 }
 
+int getEscapeCharacter(char ch) {
+    if (ch == 92) return 92;  // backslash '\\'
+    if (ch == 'a') return 7;  // alert '\a'
+    if (ch == 'b') return 8;  // backspace '\b'
+    if (ch == 'e') return 27; // escape '\e'
+    if (ch == 'f') return 12; // form feed '\f'
+    if (ch == 'n') return 10; // new line '\n'
+    if (ch == 'r') return 13; // carriage return '\r'
+    if (ch == 't') return 9;  // horizontal tab '\t'
+    if (ch == 'v') return 11; // vertical tab '\v'
+    return 0;
+}
+
 void echo(char **tokenisedCommand, int args) {
     char option1 = 'n';
     char option2 = 'e';
@@ -55,9 +68,28 @@ void echo(char **tokenisedCommand, int args) {
 
     extractArguments(strings, tokenisedCommand, args, option1, option2, &setOption1, &setOption2, &numStrings);
 
+    char stringBuilder[1000];
+    stringBuilder[0] = '\0';
     for (int i = 0; i < numStrings; ++i) {
-        printf("%s ", strings[i]);
+        if (setOption2) {
+            char escapeString[100];
+            int index = 0;
+            for (int j = 0; j < strlen(strings[i]); ++j) {
+                char ch = strings[i][j];
+                if (ch == 92 && j + 1 < strlen(strings[i])) {
+                    ch = getEscapeCharacter(strings[i][j + 1]);
+                    j++;
+                }
+                escapeString[index++] = ch;
+            }
+            if (i != 0) strcat(stringBuilder, " ");
+            strcat(stringBuilder, escapeString);
+        } else {
+            if (i != 0) strcat(stringBuilder, " ");
+            strcat(stringBuilder, strings[i]);
+        }
     }
+    printf("%s", stringBuilder);
     if (!setOption1) printf("\n");
 }
 
