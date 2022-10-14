@@ -115,6 +115,11 @@ Options:
 
 Backslash interpretations are disabled by default.
 
+Edge cases:
+
+- Without an argument, it just exits.
+- Handle backslash escapes without the need of quotes.
+
 ### <a name="ls"></a>ls
 `lsss [OPTION]... [FILE]...`
 
