@@ -99,6 +99,11 @@ void cd(char **tokenisedCommand, int args) {
         return;
     }
 
+    if (numFiles == 0) {
+        setenv("PWD", getenv("HOME"), 1); // set PWD to HOME
+        return;
+    }
+
     char* cwd;
     cwd = getenv("PWD");
 
