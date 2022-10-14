@@ -167,11 +167,19 @@ void pwd(char **tokenisedCommand, int args) {
 }
 
 int main() {
-    printf("Welcome to SeaShell!\n");
-
+    // export pwd to path
     char path[1000];
     getcwd(path, 1000);
     strcat(path, "/");
+
+    char* PATHVAR = getenv("PATH");
+    char newPath[10000];
+    strcpy(newPath, path);
+    strcat(newPath, ":");
+    strcat(newPath, PATHVAR);
+    setenv("PATH", newPath, 1);
+
+    printf("Welcome to SeaShell!\n");
 
     char* command;
 
