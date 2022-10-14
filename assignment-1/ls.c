@@ -13,18 +13,33 @@
 #include "utils.h"
 
 char* getPermissionsString(struct stat *attrib){
-    char permissions[10];
+    char *permissions = malloc(11 * sizeof(char));
     mode_t perm = attrib->st_mode;
-    permissions[0] = (perm & S_IRUSR) ? 'r' : '-';
-    permissions[1] = (perm & S_IWUSR) ? 'w' : '-';
-    permissions[2] = (perm & S_IXUSR) ? 'x' : '-';
-    permissions[3] = (perm & S_IRGRP) ? 'r' : '-';
-    permissions[4] = (perm & S_IWGRP) ? 'w' : '-';
-    permissions[5] = (perm & S_IXGRP) ? 'x' : '-';
-    permissions[6] = (perm & S_IROTH) ? 'r' : '-';
-    permissions[7] = (perm & S_IWOTH) ? 'w' : '-';
-    permissions[8] = (perm & S_IXOTH) ? 'x' : '-';
-    permissions[9] = '\0';
+    permissions[0] = '-';
+    if (S_ISDIR(attrib->st_mode)){
+        permissions[0] = 'd';
+    } else if (S_ISCHR(attrib->st_mode)){
+        permissions[0] = 'r';
+    } else if (S_ISBLK(attrib->st_mode)){
+        permissions[0] = 'b';
+    } else if (S_ISFIFO(attrib->st_mode)){
+        permissions[0] = 'p';
+    } else if (S_ISLNK(attrib->st_mode)){
+        permissions[0] = 'l';
+    } else if (S_ISSOCK(attrib->st_mode)){
+        permissions[0] = 's';
+    }
+
+    permissions[1] = (perm & S_IRUSR) ? 'r' : '-';
+    permissions[2] = (perm & S_IWUSR) ? 'w' : '-';
+    permissions[3] = (perm & S_IXUSR) ? 'x' : '-';
+    permissions[4] = (perm & S_IRGRP) ? 'r' : '-';
+    permissions[5] = (perm & S_IWGRP) ? 'w' : '-';
+    permissions[6] = (perm & S_IXGRP) ? 'x' : '-';
+    permissions[7] = (perm & S_IROTH) ? 'r' : '-';
+    permissions[8] = (perm & S_IWOTH) ? 'w' : '-';
+    permissions[9] = (perm & S_IXOTH) ? 'x' : '-';
+    permissions[10] = '\0';
     return permissions;
 }
 
