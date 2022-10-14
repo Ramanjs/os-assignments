@@ -7,3 +7,5 @@ void extractArguments(char **files, char *argv[], int argc, char option1, char o
 int isDir(char *path); // check if path is a directory
 
 int isLink(char *path); // check if path is a symlink
+
+int isFile(char *path); // check if path is a regular file

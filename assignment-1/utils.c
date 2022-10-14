@@ -56,3 +56,8 @@ int isLink(char *path) {
     struct stat attrib;
     return lstat(path, &attrib) == 0 && S_ISLNK(attrib.st_mode);
 }
+
+int isFile(char *path) {
+    struct stat attrib;
+    return lstat(path, &attrib) == 0 && S_ISREG(attrib.st_mode);
+}

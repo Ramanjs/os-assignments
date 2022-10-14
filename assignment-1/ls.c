@@ -86,7 +86,11 @@ int main(int argc, char *argv[]) {
                     free(permissions);
                 }
             } else {
-                printf("%s\n", files[i]);
+                if (!isFile(files[i])) {
+                    printf("No such file or directory\n");
+                } else {
+                    printf("%s\n", files[i]);
+                }
             }
             continue;
         }

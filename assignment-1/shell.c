@@ -123,6 +123,11 @@ void cd(char **tokenisedCommand, int args) {
     strcat(newPath, "/");
     strcat(newPath, files[0]);
 
+    if (!isLink(newPath) && !isDir(newPath)) {
+        printf("Not a directory\n");
+        return;
+    }
+
     if (setOption2 || !isLink(newPath)) {
         char *temp;
         temp = realpath(newPath, NULL);
@@ -162,7 +167,7 @@ void pwd(char **tokenisedCommand, int args) {
 }
 
 int main() {
-    printf("Welcome to my shell!\n");
+    printf("Welcome to SeaShell!\n");
 
     char path[1000];
     getcwd(path, 1000);
