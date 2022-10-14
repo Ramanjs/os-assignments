@@ -14,7 +14,7 @@ Welcome to SeaShell!
 >> 
 ```
 
-All commands are suffixed with 'ss', so to run any command, for example `cd`, run `cdss ...` instead.
+All external commands are suffixed with 'ss', so to run any external command, for example `cd`, run `cdss ...` instead.
 
 SeaShell supports execution using threads instead of forking a new child process. To run a command in a thread, enter the command you wish to execute with an `&t` at the end:
 ```
@@ -22,9 +22,13 @@ mkdirss test &t
 ```
 
 SeaShell supports the following 8 commands. Two command line options for each have been implemented.
+
+Internal:
 * [cd](#cd)
 * [pwd](#pwd)
 * [echo](#echo)
+
+External:
 * [ls](#ls)
 * [cat](#cat)
 * [rm](#rm)
