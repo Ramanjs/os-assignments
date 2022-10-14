@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
         if (setOption1) {
             while (currentEntry != NULL) {
                 struct stat attrib;
-                char filePath[100];
+                char filePath[filePathLength];
                 strcpy(filePath, files[i]);
                 strcat(filePath, "/");
                 strcat(filePath, currentEntry->d_name);

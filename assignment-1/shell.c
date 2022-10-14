@@ -27,12 +27,6 @@ void *worker(void *arg) {
     return NULL;
 }
 
-void printError() {
-    char err[100];
-    perror(err);
-    printf("%s", err);
-}
-
 int getEscapeCharacter(char ch) {
     if (ch == 92) return 92;  // backslash '\\'
     if (ch == 'a') return 7;  // alert '\a'
@@ -57,11 +51,11 @@ void echo(char **tokenisedCommand, int args) {
 
     extractArguments(strings, tokenisedCommand, args, option1, option2, &setOption1, &setOption2, &numStrings);
 
-    char stringBuilder[1000];
+    char stringBuilder[longStringLength];
     stringBuilder[0] = '\0';
     for (int i = 0; i < numStrings; ++i) {
         if (setOption2) {
-            char escapeString[100];
+            char escapeString[wordLength];
             int index = 0;
             for (int j = 0; j < strlen(strings[i]); ++j) {
                 char ch = strings[i][j];
@@ -116,14 +110,14 @@ void cd(char **tokenisedCommand, int args) {
         while (cwd[lastSlashIndex] != '/') {
             lastSlashIndex--;
         }
-        char substr[100];
+        char substr[wordLength];
         memcpy(substr, &cwd[0], lastSlashIndex);
         substr[lastSlashIndex] = '\0';
         setenv("PWD", substr, 1);
         return;
     }
 
-    char newPath[1000];
+    char newPath[longStringLength];
     strcpy(newPath, cwd);
     strcat(newPath, "/");
     strcat(newPath, files[0]);
@@ -173,12 +167,12 @@ void pwd(char **tokenisedCommand, int args) {
 
 int main() {
     // export pwd to path
-    char path[1000];
-    getcwd(path, 1000);
+    char path[longStringLength];
+    getcwd(path, longStringLength);
     strcat(path, "/");
 
     char* PATHVAR = getenv("PATH");
-    char newPath[10000];
+    char newPath[longStringLength];
     strcpy(newPath, path);
     strcat(newPath, ":");
     strcat(newPath, PATHVAR);
@@ -201,7 +195,7 @@ int main() {
                 echo(tokenisedCommand, args);
             } else if (isExternalCommand(tokenisedCommand[0])) {
                 if (strcmp(tokenisedCommand[args - 1], "&t") == 0) {
-                    char externalCommand[1000];
+                    char externalCommand[longStringLength];
                     externalCommand[0] = '\0';
                     for (int i = 0; i < args - 1; ++i) {
                         strcat(externalCommand, tokenisedCommand[i]);
@@ -213,10 +207,12 @@ int main() {
                 } else {
                     int rc = fork();
                     if (rc == 0) {
-                        char buffer[1000];
+                        char buffer[longStringLength];
                         strcpy(buffer, path);
                         strcat(buffer, tokenisedCommand[0]);
-                        if (execv(buffer, &tokenisedCommand[0]) == -1) printError();
+                        if (execv(buffer, &tokenisedCommand[0]) == -1) {
+                            printf("%s\n", strerror(errno));
+                        }
                         return 0;
                     } else {
                         int wstatus;

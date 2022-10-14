@@ -24,7 +24,7 @@ void removeIt(char *filePath, int setOption2) {
                 currentEntry = readdir(dir);
                 continue;
             }
-            char path[1000];
+            char path[filePathLength];
             strcpy(path, filePath);
             strcat(path, "/");
             strcat(path, currentEntry->d_name);

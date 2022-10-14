@@ -1,4 +1,7 @@
 const int dateTimeLength = 100;
+const int filePathLength = 100;
+const int longStringLength = 1000;
+const int wordLength = 100;
 
 char** tokeniseString(char* string, int *args, char token); // split string using specified delimiter
 
