@@ -13,11 +13,11 @@
 
 int isExternalCommand(char *command) {
     int result = 0;
-    if (strcmp(command, "myls") == 0) result = 1;
-    if (strcmp(command, "mycat") == 0) result = 1;
-    if (strcmp(command, "mydate") == 0) result = 1;
-    if (strcmp(command, "myrm") == 0) result = 1;
-    if (strcmp(command, "mymkdir") == 0) result = 1;
+    if (strcmp(command, "lsss") == 0) result = 1;
+    if (strcmp(command, "catss") == 0) result = 1;
+    if (strcmp(command, "datess") == 0) result = 1;
+    if (strcmp(command, "rmss") == 0) result = 1;
+    if (strcmp(command, "mkdirss") == 0) result = 1;
     return result;
 }
 
@@ -211,7 +211,7 @@ int main() {
                     }
                 }
             } else if (strcmp("exit", tokenisedCommand[0]) == 0) {
-                printf("Thanks for visiting, cya.\n");
+                printf("Thanks for visiting SeaShell!\n");
                 break;
             } else {
                 printf("%s: command not found\n", tokenisedCommand[0]);
