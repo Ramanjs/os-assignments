@@ -47,6 +47,17 @@ void extractArguments(char **files, char *argv[], int argc, char option1, char o
     }
 }
 
+void getAbsolutePath(char **files, int numFiles) {
+    // prefix every file name with PWD
+    for (int i = 0; i < numFiles; ++i) {
+        char temp[100];
+        strcpy(temp, files[i]);
+        strcpy(files[i], getenv("PWD"));
+        strcat(files[i], "/");
+        strcat(files[i], temp);
+    }
+}
+
 int isDir(char *path) {
     struct stat attrib;
     return stat(path, &attrib) == 0 && S_ISDIR(attrib.st_mode);

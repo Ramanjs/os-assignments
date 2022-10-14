@@ -9,12 +9,7 @@
 void printContents(char *path, int setOption1, int setOption2) {
     int lineNumber = 1;
 
-    char* pwd;
-    pwd = getenv("PWD");
-    strcat(pwd, "/");
-    strcat(pwd, path);
-
-    FILE *ptr = fopen(pwd, "r");
+    FILE *ptr = fopen(path, "r");
     if (ptr == NULL) {
         printf("%s", strerror(errno));
         return;
@@ -50,6 +45,8 @@ int main(int argc, char *argv[]) {
 
     // Extract arguments and options
     extractArguments(files, argv, argc, option1, option2, &setOption1, &setOption2, &numFiles);
+
+    getAbsolutePath(files, numFiles);
 
     for (int i = 0; i < numFiles; ++i) {
         printContents(files[i], setOption1, setOption2);

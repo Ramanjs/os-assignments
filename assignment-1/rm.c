@@ -39,7 +39,6 @@ void removeIt(char *filePath, int setOption2) {
 }
 
 int main(int argc, char *argv[]) {
-    char* path;
 
     // Defile options
     char option1 = 'r';
@@ -54,14 +53,11 @@ int main(int argc, char *argv[]) {
     // Extract arguments and options
     extractArguments(files, argv, argc, option1, option2, &setOption1, &setOption2, &numFiles);
 
+    getAbsolutePath(files, numFiles);
 
     for (int i = 0; i < numFiles; ++i) {
-        path = getenv("PWD");
-        strcat(path, "/");
-        strcat(path, files[i]);
-
-        if (setOption1) removeIt(path, setOption2);
-        else removeFile(path, setOption2);
+        if (setOption1) removeIt(files[i], setOption2);
+        else removeFile(files[i], setOption2);
     }
     return 0;
 }

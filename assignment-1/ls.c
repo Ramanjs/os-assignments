@@ -57,14 +57,7 @@ int main(int argc, char *argv[]) {
     // Extract arguments and options
     extractArguments(files, argv, argc, option1, option2, &setOption1, &setOption2, &numFiles);
 
-    // prefix every file name with PWD
-    for (int i = 0; i < numFiles; ++i) {
-        char temp[100];
-        strcpy(temp, files[i]);
-        strcpy(files[i], getenv("PWD"));
-        strcat(files[i], "/");
-        strcat(files[i], temp);
-    }
+    getAbsolutePath(files, numFiles);
 
     if (numFiles == 0) {
         files[0] = getenv("PWD");
