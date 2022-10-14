@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 
     struct tm *ftime;
 
-    char time[1000];
+    char time[dateTimeLength];
 
     if (setOption2) {
         ftime = gmtime(&rTime);

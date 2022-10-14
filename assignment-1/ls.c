@@ -57,6 +57,15 @@ int main(int argc, char *argv[]) {
     // Extract arguments and options
     extractArguments(files, argv, argc, option1, option2, &setOption1, &setOption2, &numFiles);
 
+    // prefix every file name with PWD
+    for (int i = 0; i < numFiles; ++i) {
+        char temp[100];
+        strcpy(temp, files[i]);
+        strcpy(files[i], getenv("PWD"));
+        strcat(files[i], "/");
+        strcat(files[i], temp);
+    }
+
     if (numFiles == 0) {
         files[0] = getenv("PWD");
         numFiles = 1;
@@ -80,7 +89,7 @@ int main(int argc, char *argv[]) {
                     struct group *grp = getgrgid(gid);
 
                     int size = attrib.st_size;
-                    char modifiedTime[100];
+                    char modifiedTime[dateTimeLength];
                     strftime(modifiedTime, sizeof(modifiedTime), "%b %e %H:%M", localtime(&(attrib.st_ctim)));
                     printf("%s %d %s %s %10d %s %s\n", permissions, nlinks, usr->pw_name, grp->gr_name, size, modifiedTime, files[i]);
                     free(permissions);
@@ -125,7 +134,7 @@ int main(int argc, char *argv[]) {
                     struct group *grp = getgrgid(gid);
 
                     int size = attrib.st_size;
-                    char modifiedTime[100];
+                    char modifiedTime[dateTimeLength];
                     strftime(modifiedTime, sizeof(modifiedTime), "%b %e %H:%M", localtime(&(attrib.st_ctim)));
                     printf("%s %d %s %s %10d %s %s\n", permissions, nlinks, usr->pw_name, grp->gr_name, size, modifiedTime, currentEntry->d_name);
 

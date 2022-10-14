@@ -1,3 +1,5 @@
+const int dateTimeLength = 100;
+
 char** tokeniseString(char* string, int *args, char token); // split string using specified delimiter
 
 char **getFilesArray(); // malloc memory for files array
