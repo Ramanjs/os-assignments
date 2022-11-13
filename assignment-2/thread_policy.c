@@ -163,7 +163,7 @@ int main() {
 
     get_thread_time(&thread_A, &attr_A, &thr_A, &param, SCHED_OTHER, 0);
     get_thread_time(&thread_B, &attr_B, &thr_B, &param, SCHED_RR, 99);
-    get_thread_time(&thread_C, &attr_C, &thr_C, &param, SCHED_RR, 50);
+    get_thread_time(&thread_C, &attr_C, &thr_C, &param, SCHED_FIFO, 1);
 
     pthread_join(thread_A, NULL);
     pthread_join(thread_B, NULL);
