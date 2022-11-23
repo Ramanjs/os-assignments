@@ -97,7 +97,7 @@ int main() {
     } else {
         int child_two = fork();
         if (child_two == 0) {
-            process('b', 1);
+            process('b', 2);
         } else {
             int child_three = fork();
             if (child_three == 0) {
