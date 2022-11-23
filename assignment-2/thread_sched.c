@@ -21,29 +21,6 @@ static struct timespec get_time_diff(struct timespec start, struct timespec fini
     return time_diff;
 }
 
-/*static void*/
-/*display_sched_attr(int policy, struct sched_param *param)*/
-/*{*/
-   /*printf("    policy=%s, priority=%d\n",*/
-           /*(policy == SCHED_FIFO)  ? "SCHED_FIFO" :*/
-           /*(policy == SCHED_RR)    ? "SCHED_RR" :*/
-           /*(policy == SCHED_OTHER) ? "SCHED_OTHER" :*/
-           /*"???",*/
-           /*param->sched_priority);*/
-/*}*/
-
-/*static void*/
-/*display_thread_sched_attr(FILE* fd, char *msg)*/
-/*{*/
-   /*int policy, s;*/
-   /*struct sched_param param;*/
-
-   /*s = pthread_getschedparam(pthread_self(), &policy, &param);*/
-
-   /*fprintf(fd, "%s\n", msg);*/
-   /*display_sched_attr(policy, &param);*/
-/*}*/
-
 void count_A() {
     long long int limit = (long long int) pow((double) 2, (double) 32);
     long long int i = 1;
@@ -71,14 +48,15 @@ void count_C() {
 void* thr_A(void* args) {
     struct timespec start, finish, time_diff;
 
+    int* priority = args;
+    struct sched_param param;
+    param.sched_priority = *priority;
+    pthread_setschedparam(pthread_self(), SCHED_OTHER, &param);
     clock_gettime(CLOCK_REALTIME, &start);
     count_A();
     clock_gettime(CLOCK_REALTIME, &finish);
 
     time_diff = get_time_diff(start, finish);
-
-    /*printf("Ran thread A\n");*/
-    /*display_thread_sched_attr("Scheduler attributes of new thread");*/
 
     FILE* fd = fopen("thread-a", "a");
     fprintf(fd, "%d.%.9lds\n", (int)time_diff.tv_sec, time_diff.tv_nsec);
@@ -90,14 +68,16 @@ void* thr_A(void* args) {
 void* thr_B(void* args) {
     struct timespec start, finish, time_diff;
 
+    int* priority = args;
+    struct sched_param param;
+    param.sched_priority = *priority;
+    pthread_setschedparam(pthread_self(), SCHED_OTHER, &param);
     clock_gettime(CLOCK_REALTIME, &start);
     count_B();
     clock_gettime(CLOCK_REALTIME, &finish);
 
     time_diff = get_time_diff(start, finish);
 
-    /*printf("Ran thread B\n");*/
-    /*display_thread_sched_attr("Scheduler attributes of new thread");*/
     FILE* fd = fopen("thread-b", "a");
     fprintf(fd, "%d.%.9lds\n", (int)time_diff.tv_sec, time_diff.tv_nsec);
     fclose(fd);
@@ -108,14 +88,16 @@ void* thr_B(void* args) {
 void* thr_C(void* args) {
     struct timespec start, finish, time_diff;
 
+    int* priority = args;
+    struct sched_param param;
+    param.sched_priority = *priority;
+    pthread_setschedparam(pthread_self(), SCHED_OTHER, &param);
     clock_gettime(CLOCK_REALTIME, &start);
     count_C();
     clock_gettime(CLOCK_REALTIME, &finish);
 
     time_diff = get_time_diff(start, finish);
 
-    /*printf("Ran thread C\n");*/
-    /*display_thread_sched_attr("Scheduler attributes of new thread");*/
     FILE* fd = fopen("thread-c", "a");
     fprintf(fd, "%d.%.9lds\n", (int)time_diff.tv_sec, time_diff.tv_nsec);
     fclose(fd);
@@ -123,7 +105,7 @@ void* thr_C(void* args) {
     return NULL;
 }
 
-void get_thread_time(pthread_t* thread, pthread_attr_t* attr, void* (*worker)(void *), struct sched_param* param, int policy, int priority) {
+void get_thread_time(pthread_t* thread, pthread_attr_t* attr, void* (*worker) (void *), struct sched_param* param, int policy, int priority) {
     int status;
 
     status = pthread_attr_init(attr);
@@ -148,8 +130,7 @@ void get_thread_time(pthread_t* thread, pthread_attr_t* attr, void* (*worker)(vo
         printf("%s\n", strerror(status));
     }
 
-
-    status = pthread_create(thread, attr, worker, NULL);
+    status = pthread_create(thread, attr, worker, &priority);
     if (status != 0) {
         printf("%s\n", strerror(status));
     }

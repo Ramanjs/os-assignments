@@ -6,36 +6,11 @@
 #include <time.h>
 #include <sys/wait.h>
 
-static void
-display_sched_attr(FILE* fd, int policy, struct sched_param *param)
-{
-   fprintf(fd, "    policy=%s, priority=%d\n",
-           (policy == SCHED_FIFO)  ? "SCHED_FIFO" :
-           (policy == SCHED_RR)    ? "SCHED_RR" :
-           (policy == SCHED_OTHER) ? "SCHED_OTHER" :
-           "???",
-           param->sched_priority);
-}
-
-static void
-display_thread_sched_attr(FILE* fd, char *msg)
-{
-   int policy, s;
-   struct sched_param param;
-
-   s = pthread_getschedparam(pthread_self(), &policy, &param);
-
-   fprintf(fd, "%s\n", msg);
-   display_sched_attr(fd, policy, &param);
-}
-
 void write_result_to_file(char name, struct timespec time_diff) {
     char file_name[] = "result-";
     strncat(file_name, &name, 1);
     FILE* fd = fopen(file_name, "w");
-    fprintf(fd, "Ran process: %c\n", name);
-    display_thread_sched_attr(fd, "Scheduler attributes of new thread");
-    fprintf(fd, "Time to completion: %d.%.9lds\n", (int)time_diff.tv_sec, time_diff.tv_nsec);
+    fprintf(fd, "%d.%.9lds\n", (int)time_diff.tv_sec, time_diff.tv_nsec);
     fclose(fd);
 }
 
