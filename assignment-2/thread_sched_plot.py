@@ -29,25 +29,11 @@ priorities = []
 for i in range(10):
     priorities.append(str((priorities_b[i], priorities_a[i], priorities_c[i])))
 
-trace1 = go.Bar(
-   x = priorities,
-   y = values_b,
-   name = 'SCHED_RR'
-)
+sched_rr = go.Bar(x = priorities, y = values_b, name = 'SCHED_RR')
+sched_other = go.Bar(x = priorities, y = values_a, name = 'SCHED_OTHER')
+sched_fifo = go.Bar(x = priorities, y = values_c, name = 'SCHED_FIFO')
 
-trace2 = go.Bar(
-   x = priorities,
-   y = values_a,
-   name = 'SCHED_OTHER'
-)
-
-trace3 = go.Bar(
-   x = priorities,
-   y = values_c,
-   name = 'SCHED_FIFO'
-)
-
-data = [trace1, trace2, trace3]
+data = [sched_rr, sched_other, sched_fifo]
 layout = go.Layout(barmode = 'group')
 fig = go.Figure(data = data, layout = layout)
 iplot(fig)
