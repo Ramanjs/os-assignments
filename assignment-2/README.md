@@ -10,6 +10,13 @@ There are 3 identical thread functions: countA(), countB(), countC(). All these 
 
 The general idea is the same as the first problem. Here we are creating forks instead of processes and compiling a fresh copy of the linux kernel in that process using a bash script. The syscall used to set the priority and policies is `sched_setscheduler`. A separate bash script is run using the `exec` system call that compiles 3 different copies of the kernel. Data collectiona and plotting is done in the same way as above.
 
+
+#### Explanation of results
+
+It is observed that FIFO runs faster than the other processes/threads in all cases of prirorities. RR runs its course first when its priority is more than FIFO. Still in that case, RR runs for its timeslice and gives up the CPU to the other processes. This leads to RR and FIFO taking almost similar time to completion.
+
+OTHER takes the longest time to complete in all cases as it is not prefered over REAL TIME processes. The graph plotted by the python script demonstrates these results.
+
 ### 2
 
 A buffer array is first used to copy the source array from user space to kernel space using the `__copy_from_user` syscall. Then the buffer is copied to the destination array using the `__copy_to_user` syscall. 
