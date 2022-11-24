@@ -9,3 +9,7 @@ There are 3 identical thread functions: countA(), countB(), countC(). All these 
 ### 1.2
 
 The general idea is the same as the first problem. Here we are creating forks instead of processes and compiling a fresh copy of the linux kernel in that process using a bash script. The syscall used to set the priority and policies is `sched_setscheduler`. A separate bash script is run using the `exec` system call that compiles 3 different copies of the kernel. Data collectiona and plotting is done in the same way as above.
+
+### 2
+
+A buffer array is first used to copy the source array from user space to kernel space using the `__copy_from_user` syscall. Then the buffer is copied to the destination array using the `__copy_to_user` syscall. The new syscall is added to the kernel syscall table `syscall_64.tbl` as syscall number 449. Also the new folder is added to the main Makefile. `2dcopy_test.c` tests the syscall using the `syscall` function and prints whether the syscall was successfull or not and if the src and dest arrays are equal.
