@@ -11,6 +11,7 @@ values_c = [float(x[0:len(x) - 2]) for x in sched_fifo.readlines()]
 
 priorities = []
 priorities.append(str((2, 0, 1)))
+priorities.append(str((2, 0, 2)))
 
 sched_rr = go.Bar(x = priorities, y = values_b, name = 'SCHED_RR')
 sched_other = go.Bar(x = priorities, y = values_a, name = 'SCHED_OTHER')
