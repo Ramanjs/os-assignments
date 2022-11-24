@@ -9,7 +9,7 @@
 void write_result_to_file(char name, struct timespec time_diff) {
     char file_name[] = "result-";
     strncat(file_name, &name, 1);
-    FILE* fd = fopen(file_name, "w");
+    FILE* fd = fopen(file_name, "a");
     fprintf(fd, "%d.%.9lds\n", (int)time_diff.tv_sec, time_diff.tv_nsec);
     fclose(fd);
 }
@@ -76,7 +76,7 @@ int main() {
         } else {
             int child_three = fork();
             if (child_three == 0) {
-                process('c', 1);
+                process('c', 2);
             } else {
                 int wstatus;
                 wstatus = waitpid(child_one, &wstatus, 0);
