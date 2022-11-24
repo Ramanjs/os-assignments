@@ -71,7 +71,7 @@ void* thr_B(void* args) {
     int* priority = args;
     struct sched_param param;
     param.sched_priority = *priority;
-    pthread_setschedparam(pthread_self(), SCHED_OTHER, &param);
+    pthread_setschedparam(pthread_self(), SCHED_RR, &param);
     clock_gettime(CLOCK_REALTIME, &start);
     count_B();
     clock_gettime(CLOCK_REALTIME, &finish);
@@ -91,7 +91,7 @@ void* thr_C(void* args) {
     int* priority = args;
     struct sched_param param;
     param.sched_priority = *priority;
-    pthread_setschedparam(pthread_self(), SCHED_OTHER, &param);
+    pthread_setschedparam(pthread_self(), SCHED_FIFO, &param);
     clock_gettime(CLOCK_REALTIME, &start);
     count_C();
     clock_gettime(CLOCK_REALTIME, &finish);

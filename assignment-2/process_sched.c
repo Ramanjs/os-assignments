@@ -41,7 +41,7 @@ void process(char name, int priority) {
     struct sched_param param;
     param.sched_priority = priority;
     int policy = get_sched_policy(name);
-    sched_setscheduler(getpid(), policy, &param);
+    pthread_setschedparam(pthread_self(), policy, &param);
 
     int child = fork();
     if (child == 0) {
@@ -72,7 +72,7 @@ int main() {
     } else {
         int child_two = fork();
         if (child_two == 0) {
-            process('b', 2);
+            process('b', 1);
         } else {
             int child_three = fork();
             if (child_three == 0) {
