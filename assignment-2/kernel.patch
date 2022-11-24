@@ -1,0 +1,53 @@
+diff --git a/Makefile b/Makefile
+index eca45b7be..4db97dc6a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1148,7 +1148,7 @@ export MODORDER := $(extmod_prefix)modules.order
+ export MODULES_NSDEPS := $(extmod_prefix)modules.nsdeps
+ 
+ ifeq ($(KBUILD_EXTMOD),)
+-core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/
++core-y		+= kernel/ certs/ mm/ fs/ ipc/ security/ crypto/ block/ kernel_2d_memcpy/
+ 
+ vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, \
+ 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 18b5500ea..6772e9da2 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -370,6 +370,7 @@
+ 446	common	landlock_restrict_self	sys_landlock_restrict_self
+ 447	common	memfd_secret		sys_memfd_secret
+ 448	common	process_mrelease	sys_process_mrelease
++449	common	twodcopy		sys_kernel_2d_memcpy
+ 
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+diff --git a/kernel_2d_memcpy/Makefile b/kernel_2d_memcpy/Makefile
+new file mode 100644
+index 000000000..de9174eca
+--- /dev/null
++++ b/kernel_2d_memcpy/Makefile
+@@ -0,0 +1 @@
++obj-y := kernel_2d_memcpy.o
+diff --git a/kernel_2d_memcpy/kernel_2d_memcpy.c b/kernel_2d_memcpy/kernel_2d_memcpy.c
+new file mode 100644
+index 000000000..48dc8876c
+--- /dev/null
++++ b/kernel_2d_memcpy/kernel_2d_memcpy.c
+@@ -0,0 +1,15 @@
++#include <linux/kernel.h>
++#include <linux/syscalls.h>
++
++SYSCALL_DEFINE4(kernel_2d_memcpy, void*, src, void*, dest, int, n, int, m)
++{
++	int buffer[100];
++
++	if (__copy_from_user(buffer, src, sizeof(int) * n * m))
++		return -EFAULT;
++
++	if (__copy_to_user(dest, buffer, sizeof(int) * n * m))
++		return -EFAULT;
++
++	return 0;
++}
