@@ -12,4 +12,8 @@ The general idea is the same as the first problem. Here we are creating forks in
 
 ### 2
 
-A buffer array is first used to copy the source array from user space to kernel space using the `__copy_from_user` syscall. Then the buffer is copied to the destination array using the `__copy_to_user` syscall. The new syscall is added to the kernel syscall table `syscall_64.tbl` as syscall number 449. Also the new folder is added to the main Makefile. `2dcopy_test.c` tests the syscall using the `syscall` function and prints whether the syscall was successfull or not and if the src and dest arrays are equal.
+A buffer array is first used to copy the source array from user space to kernel space using the `__copy_from_user` syscall. Then the buffer is copied to the destination array using the `__copy_to_user` syscall. 
+
+Copying a 2d array is similar to copying 1d array as the rows are arranged one after the other in memory. It means that we only need to copy (rows x columns) cells from the src to dest to effectively copy the whole 2d array.
+
+The new syscall is added to the kernel syscall table `syscall_64.tbl` as syscall number 449. Also the new folder is added to the main Makefile. `2dcopy_test.c` tests the syscall using the `syscall` function and prints whether the syscall was successfull or not and if the src and dest arrays are equal.
