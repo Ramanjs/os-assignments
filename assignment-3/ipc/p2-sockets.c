@@ -24,9 +24,21 @@ int main(int argc, char *argv[]) {
 
   int numRead;
   char string[STRING_LENGTH];
-  while ((numRead = read(cfd, string, STRING_LENGTH)) > 0) {
-    checkError(numRead);
-    printf("%s\n", string);
+  char index[STRING_LENGTH];
+  for (int i = 1; i <= STRING_ARRAY_LENGTH; i++) {
+    numRead = read(cfd, string, STRING_LENGTH);
+    if (numRead != STRING_LENGTH) checkError(numRead);
+
+    numRead = read(cfd, index, STRING_LENGTH);
+    if (numRead != STRING_LENGTH) checkError(numRead);
+
+    printf("%s: %s\n", index, string);
+
+    if (i % STRING_LENGTH == 0) {
+      char buf[STRING_LENGTH] = {0};
+      snprintf(buf, sizeof(i), "%d", i);
+      write(cfd, buf, STRING_LENGTH);
+    }
   }
   return 0;
 }
