@@ -13,6 +13,7 @@ int main(int argc, char *argv[]) {
   int status;
   int numRead, numWritten;
   char buf[STRING_LENGTH];
+  char index[STRING_LENGTH];
 
   status = mkfifo(P2_FIFO_PATH, S_IRUSR | S_IWUSR | S_IWGRP);
   if (errno != EEXIST) checkError(status);
@@ -24,7 +25,10 @@ int main(int argc, char *argv[]) {
     numRead = read(fifoRead, buf, STRING_LENGTH);
     if (numRead != STRING_LENGTH) checkError(-1);
 
-    printf("%s\n", buf);
+    numRead = read(fifoRead, index, STRING_LENGTH);
+    if (numRead != STRING_LENGTH) checkError(-1);
+
+    printf("%s %s\n", index, buf);
 
     if (i % 5 == 0) {
       snprintf(buf, STRING_LENGTH, "%d", i);

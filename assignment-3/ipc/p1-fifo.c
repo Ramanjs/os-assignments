@@ -27,7 +27,10 @@ int main(int argc, char *argv[]) {
   clock_gettime(CLOCK_REALTIME, &start);
   for (int i = 1; i <= STRING_ARRAY_LENGTH; i++) {
     numWritten = write(fifoWrite, strings[i - 1], STRING_LENGTH);
+    if (numWritten != STRING_LENGTH) checkError(-1);
 
+    snprintf(buf, STRING_LENGTH, "%d", i);
+    numWritten = write(fifoWrite, buf, STRING_LENGTH);
     if (numWritten != STRING_LENGTH) checkError(-1);
 
     if (i % 5 == 0) {
