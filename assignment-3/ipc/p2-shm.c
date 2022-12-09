@@ -22,10 +22,12 @@ int main(int argc, char *argv[]) {
 
   for (int i = 1; i <= STRING_ARRAY_LENGTH / 5; ++i) {
     sem_wait(p2Sem);
-    for (int j = 0; j < 5; ++j) {
-      printf("%s\n", getStringAt(data, j));
+    for (int j = 0; j < 10; j += 2) {
+      printf("%s: %s\n", getStringAt(data, j), getStringAt(data, j + 1));
     }
+    strncpy(getStringAt(data, 0), getStringAt(data, 8), STRING_LENGTH);
     sem_post(p1Sem);
+
   }
 
   munmap(data, SHM_SIZE);

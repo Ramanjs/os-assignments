@@ -4,7 +4,7 @@
 #define STRING_ARRAY_LENGTH 50
 #define STRING_LENGTH 5
 #define SHM_NAME "os-a3"
-#define SHM_SIZE sizeof(char*) * STRING_LENGTH * 5
+#define SHM_SIZE sizeof(char*) * STRING_LENGTH * 5 * 2
 #define SEM_P1 "os-a3-p1"
 #define SEM_P2 "os-a3-p2"
 char** generateRandomStrings();

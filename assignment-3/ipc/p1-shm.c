@@ -21,13 +21,21 @@ int main(int argc, char *argv[]) {
   char* data = (char*) mmap(0, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 
   int index = 1;
+  char buf[STRING_LENGTH];
   for (int i = 1; i <= STRING_ARRAY_LENGTH / 5; ++i) {
     sem_wait(p1Sem);
-    for (int j = 0; j < 5; ++j) {
-      strncpy(getStringAt(data, (index - 1) % 5), strings[index - 1], STRING_LENGTH);
+    for (int j = 0; j < 10; j += 2) {
+      snprintf(buf, STRING_LENGTH, "%d", index);
+      strncpy(getStringAt(data, j), buf, STRING_LENGTH);
+      strncpy(getStringAt(data, j + 1), strings[index - 1], STRING_LENGTH);
       index++;
     }
     sem_post(p2Sem);
+
+    sem_wait(p1Sem);
+    strncpy(buf, getStringAt(data, 0), STRING_LENGTH);
+    printf("Index of last element: %s\n", buf);
+    sem_post(p1Sem);
   }
 
   munmap(data, SHM_SIZE);
