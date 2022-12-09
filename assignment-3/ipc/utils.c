@@ -39,3 +39,16 @@ void checkError(int status) {
 char* getStringAt(char* arr, int n) {
   return arr + (n * STRING_LENGTH);
 }
+
+struct timespec getTimeDiff(struct timespec start, struct timespec finish) {
+    struct timespec timeDiff;
+    timeDiff.tv_sec = finish.tv_sec - start.tv_sec;
+    timeDiff.tv_nsec = finish.tv_nsec - start.tv_nsec;
+
+    if (timeDiff.tv_nsec < 0) {
+        timeDiff.tv_nsec += 1000000000;
+        timeDiff.tv_sec -= 1;
+    }
+
+    return timeDiff;
+}

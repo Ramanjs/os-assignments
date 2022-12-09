@@ -1,5 +1,7 @@
+#include <bits/time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -9,6 +11,7 @@
 #include "utils.h"
 
 int main(int argc, char *argv[]) {
+  struct timespec start, finish, timeDiff;
   char** strings = generateRandomStrings();
 
   int status;
@@ -21,6 +24,7 @@ int main(int argc, char *argv[]) {
   int fifoWrite = open(P1_FIFO_PATH, O_WRONLY); checkError(fifoWrite);
   int fifoRead = open(P2_FIFO_PATH, O_RDONLY); checkError(fifoRead);
 
+  clock_gettime(CLOCK_REALTIME, &start);
   for (int i = 1; i <= STRING_ARRAY_LENGTH; i++) {
     numWritten = write(fifoWrite, strings[i - 1], STRING_LENGTH);
 
@@ -33,6 +37,10 @@ int main(int argc, char *argv[]) {
       printf("Index of last element: %s\n", buf);
     }
   }
+  clock_gettime(CLOCK_REALTIME, &finish);
+
+  timeDiff = getTimeDiff(start, finish);
+  printf("Time taken: %d.%.5lds\n", (int) timeDiff.tv_sec, timeDiff.tv_nsec);
 
   return 0;
 }

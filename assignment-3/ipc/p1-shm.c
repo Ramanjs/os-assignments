@@ -1,6 +1,8 @@
+#include <bits/time.h>
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
+#include <time.h>
 #include <unistd.h>
 #include <errno.h>
 #include <asm-generic/errno-base.h>
@@ -10,6 +12,7 @@
 #include "utils.h"
 
 int main(int argc, char *argv[]) {
+  struct timespec start, finish, timeDiff;
   char** strings = generateRandomStrings();
 
   int fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0777);
@@ -22,6 +25,8 @@ int main(int argc, char *argv[]) {
 
   int index = 1;
   char buf[STRING_LENGTH];
+
+  clock_gettime(CLOCK_REALTIME, &start);
   for (int i = 1; i <= STRING_ARRAY_LENGTH / 5; ++i) {
     sem_wait(p1Sem);
     for (int j = 0; j < 10; j += 2) {
@@ -37,6 +42,9 @@ int main(int argc, char *argv[]) {
     printf("Index of last element: %s\n", buf);
     sem_post(p1Sem);
   }
+  clock_gettime(CLOCK_REALTIME, &finish);
+  timeDiff = getTimeDiff(start, finish);
+  printf("Time taken: %d.%.5lds\n", (int) timeDiff.tv_sec, timeDiff.tv_nsec);
 
   munmap(data, SHM_SIZE);
   close(fd);

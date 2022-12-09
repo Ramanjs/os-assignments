@@ -1,3 +1,5 @@
+#include <bits/types/struct_timespec.h>
+#include <time.h>
 #define SOCK_PATH "/tmp/p1-socket"
 #define P1_FIFO_PATH "/tmp/p1-fifo"
 #define P2_FIFO_PATH "/tmp/p2-fifo"
@@ -11,3 +13,4 @@ char** generateRandomStrings();
 void printStrings(char**);
 void checkError(int);
 char* getStringAt(char*, int);
+struct timespec getTimeDiff(struct timespec, struct timespec);
