@@ -35,3 +35,7 @@ void checkError(int status) {
     exit(1);
   }
 }
+
+char* getStringAt(char* arr, int n) {
+  return arr + (n * STRING_LENGTH);
+}
