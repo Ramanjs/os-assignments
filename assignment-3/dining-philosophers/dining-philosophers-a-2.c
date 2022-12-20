@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <errno.h>
+#include <unistd.h>
 
 sem_t fork1, fork2, fork3, fork4, fork5;
 
@@ -19,6 +20,7 @@ void* eat1(void* args) {
   st = sem_wait(&fork1); checkError(st);
   st = sem_wait(&fork2); checkError(st);
   printf("Philosopher 1 started eating using fork1 and fork2\n");
+  sleep(1);
   printf("Philosopher 1 finished eating using fork1 and fork2\n");
   st = sem_post(&fork2); checkError(st);
   st = sem_post(&fork1); checkError(st);
@@ -31,6 +33,7 @@ void* eat2(void* args) {
   st = sem_wait(&fork2); checkError(st);
   st = sem_wait(&fork3); checkError(st);
   printf("Philosopher 2 started eating using fork2 and fork3\n");
+  sleep(1);
   printf("Philosopher 2 finished eating using fork2 and fork3\n");
   st = sem_post(&fork3); checkError(st);
   st = sem_post(&fork2); checkError(st);
@@ -43,6 +46,7 @@ void* eat3(void* args) {
   st = sem_wait(&fork3); checkError(st);
   st = sem_wait(&fork4); checkError(st);
   printf("Philosopher 3 started eating using fork3 and fork4\n");
+  sleep(1);
   printf("Philosopher 3 finished eating using fork3 and fork4\n");
   st = sem_post(&fork4); checkError(st);
   st = sem_post(&fork3); checkError(st);
@@ -55,6 +59,7 @@ void* eat4(void* args) {
   st = sem_wait(&fork4); checkError(st);
   st = sem_wait(&fork5); checkError(st);
   printf("Philosopher 4 started eating using fork4 and fork5\n");
+  sleep(1);
   printf("Philosopher 4 finished eating using fork4 and fork5\n");
   st = sem_post(&fork5); checkError(st);
   st = sem_post(&fork4); checkError(st);
@@ -64,12 +69,13 @@ void* eat4(void* args) {
 
 void* eat5(void* args) {
   int st = 0;
-  st = sem_wait(&fork5); checkError(st);
   st = sem_wait(&fork1); checkError(st);
+  st = sem_wait(&fork5); checkError(st);
   printf("Philosopher 5 started eating using fork5 and fork1\n");
+  sleep(1);
   printf("Philosopher 5 finished eating using fork5 and fork1\n");
-  st = sem_post(&fork1); checkError(st);
   st = sem_post(&fork5); checkError(st);
+  st = sem_post(&fork1); checkError(st);
 
   return NULL;
 }
