@@ -1,6 +1,6 @@
 #include <linux/init.h>
 #include <linux/module.h>
-#include <pid.h>
+#include <linux/pid.h>
 #include <linux/fs.h>
 #include <linux/sched.h>
 #include <asm/uaccess.h>
@@ -19,7 +19,7 @@ static struct class *procClass = NULL;
 static struct device *procDevice = NULL;
 static struct cdev procCdev;
 static long current_pid;
-static long dev_num;
+static int dev_num;
 
 static ssize_t device_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos) {
   struct task_struct *task;
