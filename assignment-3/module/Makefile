@@ -1,4 +1,4 @@
-obj-m += processinfo.o
+obj-m += process.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules

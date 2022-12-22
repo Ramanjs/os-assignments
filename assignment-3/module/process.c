@@ -6,7 +6,7 @@
 #include <linux/cred.h>
 #include <linux/uidgid.h>
 
-MODULE_LICENSE("MIT");
+MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Raman");
 MODULE_DESCRIPTION("A simple module to get process info from its task_struct");
 
@@ -17,7 +17,7 @@ static int pid = 0;
 module_param(pid, int, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
 MODULE_PARM_DESC(pid, "Process ID");
 
-static int __init hello_init(void) {
+static int __init process_init(void) {
 	pid_s = find_get_pid(pid);
 	task = get_pid_task(pid_s, PIDTYPE_PID);
 	printk(KERN_INFO "Task pid: %d", task->pid);
@@ -28,9 +28,9 @@ static int __init hello_init(void) {
 	return 0;
 }
 
-static void __exit hello_cleanup(void) {
+static void __exit process_cleanup(void) {
 	printk(KERN_INFO "Cleaning up module.\n");
 }
 
-module_init(hello_init);
-module_exit(hello_cleanup);
+module_init(process_init);
+module_exit(process_cleanup);
